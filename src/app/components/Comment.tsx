@@ -33,6 +33,19 @@ export const Comment = (props: CommentProps) => {
       >
         Reply
       </Button>
+      <Button
+        onClick={() => {
+          fetch("/api/comment", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: comment.id }),
+          });
+        }}
+      >
+        Delete
+      </Button>
       {comment?.childComments?.length > 0 &&
         comment.childComments.map((childComment) => {
           return <Comment key={childComment.id} comment={childComment} />;

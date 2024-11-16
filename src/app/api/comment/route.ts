@@ -14,3 +14,12 @@ export async function POST(request: CommentRequest) {
 
   return Response.json(data);
 }
+
+export async function DELETE(request: NextRequest) {
+  const body = await request.json();
+  const data = await prisma.comment.delete({
+    where: { id: body.id },
+  });
+
+  return Response.json(data);
+}
