@@ -1,8 +1,29 @@
+import { Prisma } from "@prisma/client";
 import prisma from "../../../lib/prisma";
+import { Comment } from "./Comment";
 
 export const CommentsList = async () => {
-  const comments = await prisma.comment.findMany();
-  console.log(comments);
+  // Prisma currently doesn't support recursive relationships (https://github.com/prisma/prisma/issues/3725)
+  // so we fetch all comments and assemble our structure recursively here
+  const comments = await prisma.comment.findMany({
+    include: { childComments: true },
+  });
 
-  return <p>{comments.map((comment) => comment.content)}</p>;
+  const nest = (
+    items: Prisma.CommentGetPayload<{ include: { childComments: true } }>[],
+    id: number | null = null
+  ): Comment[] =>
+    items
+      .filter((item) => item.parentCommentId === id)
+      .map((item) => ({ ...item, childComments: nest(items, item.id) }));
+
+  const nestedComments = nest(comments);
+
+  return (
+    <>
+      {nestedComments.map((comment) => (
+        <Comment key={comment.id} comment={comment} />
+      ))}
+    </>
+  );
 };
