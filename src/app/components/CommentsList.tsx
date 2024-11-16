@@ -24,6 +24,7 @@ export const CommentsList = async () => {
       {nestedComments.map((comment) => (
         <Comment key={comment.id} comment={comment} />
       ))}
+      <Comment comment={undefined} />
     </>
   );
 };
