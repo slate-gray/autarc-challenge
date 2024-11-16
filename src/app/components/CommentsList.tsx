@@ -20,11 +20,11 @@ export const CommentsList = async () => {
   const nestedComments = nest(comments);
 
   return (
-    <>
+    <div className="max-w-2xl flex flex-col gap-8 items-start">
       {nestedComments.map((comment) => (
         <Comment key={comment.id} comment={comment} />
       ))}
       <Comment comment={undefined} />
-    </>
+    </div>
   );
 };

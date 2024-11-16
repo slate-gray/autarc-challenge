@@ -47,30 +47,36 @@ export const Comment = (props: CommentProps) => {
   };
 
   return (
-    <div className="pl-4">
-      <p>{comment?.content}</p>
-      {addComment && (
-        <TextArea
-          value={commentText}
-          onChange={(e) => {
-            setCommentText(e.target.value);
-          }}
-        />
-      )}
-      {addComment ? (
-        <Button onClick={() => submitComment(commentText)}>Submit</Button>
-      ) : (
-        <Button onClick={() => setAddComment(true)}>{comment?.content ? "Reply" : "Add comment"}</Button>
-      )}
-      {comment?.id && (
-        <Button
-          onClick={() => {
-            deleteComment(comment.id);
-          }}
-        >
-          Delete
-        </Button>
-      )}
+    <div className={`flex flex-col gap-8 pl-4 ${comment?.parentCommentId && "border-l"}`}>
+      <div className="flex flex-col gap-2">
+        <p>{comment?.content}</p>
+        {addComment && (
+          <TextArea
+            value={commentText}
+            onChange={(e) => {
+              setCommentText(e.target.value);
+            }}
+          />
+        )}
+        <div className="flex flex-row gap-2">
+          {addComment ? (
+            <Button onClick={() => submitComment(commentText)}>Submit</Button>
+          ) : (
+            <Button onClick={() => setAddComment(true)}>{comment?.content ? "Reply" : "Add comment"}</Button>
+          )}
+          {comment?.id && !addComment && (
+            <Button
+              onClick={() => {
+                deleteComment(comment.id);
+              }}
+              variant="outline"
+              color="red"
+            >
+              Delete
+            </Button>
+          )}
+        </div>
+      </div>
       {comment &&
         comment?.childComments?.length > 0 &&
         comment.childComments.map((childComment) => {
