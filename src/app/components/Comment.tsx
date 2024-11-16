@@ -2,6 +2,7 @@
 
 import { Prisma } from "@prisma/client";
 import { TextArea, Button } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export type Comment = Omit<Prisma.CommentGetPayload<{ include: { childComments: true } }>, "childComments"> & {
@@ -14,6 +15,7 @@ interface CommentProps {
 
 export const Comment = (props: CommentProps) => {
   const { comment } = props;
+  const { refresh } = useRouter();
 
   const [commentText, setCommentText] = useState("");
   return (
@@ -29,6 +31,8 @@ export const Comment = (props: CommentProps) => {
             },
             body: JSON.stringify({ parentCommentId: comment.id, content: commentText }),
           });
+          setCommentText("");
+          refresh();
         }}
       >
         Reply
@@ -42,6 +46,7 @@ export const Comment = (props: CommentProps) => {
             },
             body: JSON.stringify({ id: comment.id }),
           });
+          refresh();
         }}
       >
         Delete
