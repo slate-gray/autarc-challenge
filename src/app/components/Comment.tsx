@@ -17,44 +17,55 @@ export const Comment = (props: CommentProps) => {
   const { comment } = props;
   const { refresh } = useRouter();
 
+  const [addComment, setAddComment] = useState(false);
   const [commentText, setCommentText] = useState("");
+
+  const submitComment = (content: string) => {
+    if (content.length > 0) {
+      fetch("/api/comment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ parentCommentId: comment?.id, content: content }),
+      });
+      setAddComment(false);
+      setCommentText("");
+      refresh();
+    }
+  };
+
+  const deleteComment = (id: number) => {
+    fetch("/api/comment", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+    refresh();
+  };
+
   return (
     <div className="pl-4">
       <p>{comment?.content}</p>
-      <TextArea
-        value={commentText}
-        onChange={(e) => {
-          setCommentText(e.target.value);
-        }}
-      />
-      <Button
-        onClick={() => {
-          if (commentText.length > 0) {
-            fetch("/api/comment", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ parentCommentId: comment?.id, content: commentText }),
-            });
-            setCommentText("");
-            refresh();
-          }
-        }}
-      >
-        {comment?.content ? "Reply" : "Add comment"}
-      </Button>
+      {addComment && (
+        <TextArea
+          value={commentText}
+          onChange={(e) => {
+            setCommentText(e.target.value);
+          }}
+        />
+      )}
+      {addComment ? (
+        <Button onClick={() => submitComment(commentText)}>Submit</Button>
+      ) : (
+        <Button onClick={() => setAddComment(true)}>{comment?.content ? "Reply" : "Add comment"}</Button>
+      )}
       {comment?.id && (
         <Button
           onClick={() => {
-            fetch("/api/comment", {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ id: comment?.id }),
-            });
-            refresh();
+            deleteComment(comment.id);
           }}
         >
           Delete
