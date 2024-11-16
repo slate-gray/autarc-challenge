@@ -10,19 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  name     String?
-  comments Comment[]
-}
-
 model Comment {
   id              Int       @id @default(autoincrement())
   content         String
-  author          User      @relation(fields: [authorId], references: [id])
-  authorId        Int
-  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id])
+  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id], onDelete: Cascade)
   childComments   Comment[] @relation("ChildComments")
   parentCommentId Int?
 }

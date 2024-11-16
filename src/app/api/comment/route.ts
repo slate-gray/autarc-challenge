@@ -9,7 +9,7 @@ interface CommentRequest extends NextRequest {
 export async function POST(request: CommentRequest) {
   const body = await request.json();
   const data = await prisma.comment.create({
-    data: { parentCommentId: body.parentCommentId, content: body.content, authorId: 1 },
+    data: { parentCommentId: body.parentCommentId, content: body.content },
   });
 
   return Response.json(data);
