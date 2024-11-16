@@ -18,8 +18,11 @@ model User {
 }
 
 model Comment {
-  id       Int    @id @default(autoincrement())
-  content  String
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId Int
+  id              Int       @id @default(autoincrement())
+  content         String
+  author          User      @relation(fields: [authorId], references: [id])
+  authorId        Int
+  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id])
+  childComments   Comment[] @relation("ChildComments")
+  parentCommentId Int?
 }
