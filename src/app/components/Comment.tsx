@@ -20,9 +20,9 @@ export const Comment = (props: CommentProps) => {
   const [addComment, setAddComment] = useState(false);
   const [commentText, setCommentText] = useState("");
 
-  const submitComment = (content: string) => {
+  const submitComment = async (content: string) => {
     if (content.length > 0) {
-      fetch("/api/comment", {
+      await fetch("/api/comment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,8 +35,8 @@ export const Comment = (props: CommentProps) => {
     }
   };
 
-  const deleteComment = (id: number) => {
-    fetch("/api/comment", {
+  const deleteComment = async (id: number) => {
+    await fetch("/api/comment", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
